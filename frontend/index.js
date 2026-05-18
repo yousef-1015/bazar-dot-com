@@ -28,6 +28,19 @@ app.get("/search/:topic", async (req, res) => {
 });
 
 
+app.get("/info/:id", async (req, res) => {
+  try {
+    const response = await fetch(`${CATALOG_URL}/info/${req.params.id}`);
+
+    const data = await response.json();
+    res.status(response.status).json(data);
+  } catch (error) {
+    res.status(500).json({
+      error: "Frontend failed to contact catalog server"
+    });
+  }
+});
+
 app.post("/purchase/:id", async (req, res) => {
   try {
     const response = await fetch(`${ORDER_URL}/purchase/${req.params.id}`, {
