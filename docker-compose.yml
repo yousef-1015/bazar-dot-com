@@ -1,0 +1,46 @@
+services:
+  frontend:
+    build: ./frontend
+    container_name: bazar-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      CATALOG_URL: http://catalog:3001
+      ORDER_URL: http://order:3002
+    depends_on:
+      - catalog
+      - order
+    networks:
+      - bazar-network
+
+  catalog:
+    build: ./catalog
+    container_name: bazar-catalog
+    ports:
+      - "3001:3001"
+    environment:
+      PORT: 3001
+    volumes:
+      - ./catalog/data.csv:/app/data.csv
+    networks:
+      - bazar-network
+
+  order:
+    build: ./order
+    container_name: bazar-order
+    ports:
+      - "3002:3002"
+    environment:
+      PORT: 3002
+      CATALOG_URL: http://catalog:3001
+    volumes:
+      - ./order/data.csv:/app/data.csv
+    depends_on:
+      - catalog
+    networks:
+      - bazar-network
+
+networks:
+  bazar-network:
+    driver: bridge
