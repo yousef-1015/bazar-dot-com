@@ -65,6 +65,12 @@ app.get("/", (req, res) => {
   });
 });
 
+app.use((req, res) => {
+  res.status(404).json({
+    error: "Route not found"
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`[frontend] server running on port ${PORT}`);
 });
