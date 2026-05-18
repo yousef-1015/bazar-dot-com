@@ -22,7 +22,7 @@ services:
     environment:
       PORT: 3001
     volumes:
-      - ./catalog/data.csv:/app/data.csv
+      - ./catalog/catalog-data.csv:/app/catalog-data.csv
     networks:
       - bazar-network
 
@@ -35,7 +35,7 @@ services:
       PORT: 3002
       CATALOG_URL: http://catalog:3001
     volumes:
-      - ./order/data.csv:/app/data.csv
+      - ./order/orders.csv:/app/orders.csv
     depends_on:
       - catalog
     networks:
