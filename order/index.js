@@ -60,13 +60,16 @@ app.post('/purchase/:id', async (req, res) => {
   res.json({ message: 'Order placed successfully', book: book.title })
 })
 
-
-
-
-
-
 //* listen 
-const PORT = 3002
-app.listen(PORT, () => {
+const PORT = process.env.PORT || 3002
+
+const server = app.listen(PORT, () => {
   console.log(`[ORDER] Server running on port ${PORT}`)
+})
+
+process.on('SIGTERM', () => {
+  console.log('[ORDER] Shutting down')
+  server.close(() => {
+    process.exit(0)
+  })
 })
