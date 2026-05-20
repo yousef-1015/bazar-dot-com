@@ -12,7 +12,7 @@ app.use(express.json())
 
 const ORDERS_PATH = path.join(__dirname, 'orders-data.csv')
 const CATALOG_URL = process.env.CATALOG_URL || 'http://localhost:3001'
-const REPLICA_URL = 'http://localhost:3004'   // the other order replica
+const REPLICA_URL = process.env.REPLICA_URL || 'http://localhost:3004'
 
 //* POST /purchase/:id
 app.post('/purchase/:id', async (req, res) => {
