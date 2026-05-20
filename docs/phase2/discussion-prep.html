@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bazar.com Phase 1 + Phase 2 Discussion Prep</title>
+<style>
+:root{--bg-color:#f4f0eb;--text-color:#111;--accent-1:#ff6b6b;--accent-2:#4ecdc4;--accent-3:#ffe66d;--accent-4:#a890fe;--accent-5:#9be564;--border-width:4px}*{box-sizing:border-box}body{font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg-color);color:var(--text-color);margin:0;padding:36px 18px;line-height:1.55}.container{max-width:1120px;margin:0 auto}header{background:var(--accent-1);border:var(--border-width) solid var(--text-color);padding:24px 30px;box-shadow:8px 8px 0 var(--text-color);margin-bottom:24px;text-transform:uppercase}h1{margin:0;font-size:2.15rem;font-weight:900}h2{margin:0;font-size:1.35rem}h3{margin:0 0 10px;font-size:1.1rem}.meta{font-weight:800;margin-top:10px}.notice{background:#fff;border:3px solid #111;padding:14px 18px;box-shadow:5px 5px 0 #111;margin:20px 0 28px}.toolbar{position:sticky;top:0;background:var(--bg-color);z-index:5;padding:12px 0;border-bottom:3px solid #111;margin-bottom:24px;display:flex;gap:10px;flex-wrap:wrap}input,select{border:3px solid #111;padding:10px 12px;font-weight:700;background:#fff;box-shadow:3px 3px 0 #111}input{min-width:300px;flex:1}.section{margin-bottom:48px}.section-header{display:inline-block;background:var(--accent-2);border:var(--border-width) solid var(--text-color);padding:10px 18px;box-shadow:5px 5px 0 var(--text-color);margin-bottom:20px;transform:rotate(-1deg)}.section-header.red{background:var(--accent-1)}.section-header.yellow{background:var(--accent-3)}.section-header.purple{background:var(--accent-4)}.section-header.green{background:var(--accent-5)}.card{background:#fff;border:var(--border-width) solid var(--text-color);padding:22px;margin-bottom:22px;box-shadow:6px 6px 0 var(--text-color)}.tag{font-size:.78rem;font-weight:900;text-transform:uppercase;border:2px solid #111;background:#eee;padding:3px 8px;display:inline-block;margin:0 6px 8px 0}.qid{font-weight:900;background:var(--accent-3);border:2px solid #111;padding:2px 8px;display:inline-block;margin-right:6px}.prompt{font-size:1.05rem;font-weight:850;margin:10px 0}.answer{margin-top:12px;padding:15px;background:var(--accent-4);border:3px dashed #111;font-weight:750}.answer.hidden{display:none}.btn{background:var(--accent-3);border:3px solid #111;padding:9px 18px;font-weight:900;cursor:pointer;box-shadow:4px 4px 0 #111;text-transform:uppercase;margin-top:10px}.btn:active{box-shadow:none;transform:translate(3px,3px)}.code{font-family:'Courier New',monospace;background:#111;color:#f4f0eb;padding:12px;white-space:pre-wrap;overflow-x:auto;border:3px solid #111;margin-top:8px}.light-code{font-family:'Courier New',monospace;background:#eee;color:#111;padding:12px;white-space:pre-wrap;overflow-x:auto;border:2px solid #111;margin-top:8px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}.mini{background:#fff;border:3px solid #111;padding:14px;box-shadow:4px 4px 0 #111}.mini strong{display:block;margin-bottom:6px}.checklist li{margin:7px 0}.danger{background:#ffd1d1;border:3px solid #111;padding:12px;font-weight:800}.ok{background:#d7ffd1;border:3px solid #111;padding:12px;font-weight:800}.source{font-size:.85rem;font-weight:800;color:#444;margin-top:10px}.count{font-weight:900;margin-left:auto}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;background:#fff;margin-top:10px}th,td{border:3px solid #111;padding:10px;text-align:left;vertical-align:top}th{background:var(--accent-3);font-weight:900}footer{text-align:center;background:#111;color:#f4f0eb;margin-top:50px;padding:20px;font-weight:800}@media print{.toolbar,.btn{display:none}.answer.hidden{display:block}.card{break-inside:avoid}body{padding:0;background:white}.container{max-width:none}header,.card,.notice,.mini{box-shadow:none}}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <h1>Bazar.com Discussion Prep</h1>
+  <p class="meta">Phase 1 + Phase 2 · Postman Demo · Code Locations · Likely Questions</p>
+</header>
+
+<div class="notice">
+  <strong>How to use this page:</strong> Search for a topic like cache, Docker, Postman, sync, performance, or port. Click "Reveal Answer" on discussion cards. The content is built around the exact questions other students reported: explain the project, show where cache invalidation happens, name the load-balancing algorithm, explain Docker ports, test with Postman, and explain performance measurement, caching, and data consistency.
+</div>
+
+<div class="toolbar">
+  <input id="search" placeholder="Search discussion prep..." oninput="filterCards()" />
+  <select id="sectionFilter" onchange="filterCards()">
+    <option value="all">All sections</option>
+    <option value="postman">Postman</option>
+    <option value="phase1">Phase 1</option>
+    <option value="phase2">Phase 2</option>
+    <option value="questions">Likely Questions</option>
+    <option value="code">Code Locations</option>
+    <option value="docker">Docker</option>
+  </select>
+  <span class="count" id="count"></span>
+</div>
+
+<section class="section" data-section="postman">
+  <div class="section-header red"><h2>1. Postman Demo Plan</h2></div>
+
+  <div class="card" data-tags="postman demo startup docker">
+    <span class="tag">Postman</span><span class="tag">Before Demo</span>
+    <div class="prompt">Start the project and prepare the terminal logs.</div>
+    <div class="code">docker compose up --build</div>
+    <p>Keep this terminal visible during the discussion because the instructor may ask to see logs for cache hits, cache misses, load balancing, invalidation, and replica sync.</p>
+    <div class="ok">Base URL in Postman: <code>http://localhost:3000</code></div>
+  </div>
+
+  <div class="card" data-tags="postman search catalog frontend phase1 phase2">
+    <span class="tag">Postman</span><span class="tag">Search</span>
+    <div class="prompt">Test 1: End-to-end search request.</div>
+    <div class="code">GET http://localhost:3000/search/distributed%20systems</div>
+    <p><strong>Expected response:</strong> an array of matching books, including ids and titles.</p>
+    <div class="light-code">[
+  {
+    "id": 1,
+    "title": "How to get a good grade in DOS in 40 minutes a day"
+  },
+  {
+    "id": 2,
+    "title": "RPCs for Noobs"
+  },
+  {
+    "id": 5,
+    "title": "How to finish Project 3 on time"
+  }
+]</div>
+    <p><strong>Explain:</strong> Client calls frontend. Frontend chooses a catalog replica using round-robin. Catalog reads the CSV and returns all books with the matching topic.</p>
+  </div>
+
+  <div class="card" data-tags="postman cache hit miss info frontend">
+    <span class="tag">Postman</span><span class="tag">Cache</span>
+    <div class="prompt">Test 2: Show cache miss, then cache hit.</div>
+    <div class="code">DELETE http://localhost:3000/cache/1
+GET    http://localhost:3000/info/1
+GET    http://localhost:3000/info/1</div>
+    <p><strong>Expected logs:</strong></p>
+    <div class="light-code">[FRONTEND] CACHE INVALIDATED id=1
+[FRONTEND] CACHE MISS id=1
+[FRONTEND] ROUTE GET /info/1 -> http://catalog:3001
+[FRONTEND] CACHE HIT id=1</div>
+    <p><strong>Explain:</strong> The first info request after invalidation is a miss and goes to catalog. The second one is served directly from the frontend cache.</p>
+  </div>
+
+  <div class="card" data-tags="postman purchase order catalog update invalidation sync">
+    <span class="tag">Postman</span><span class="tag">Purchase</span>
+    <div class="prompt">Test 3: Successful purchase flow.</div>
+    <div class="code">POST http://localhost:3000/purchase/1</div>
+    <p><strong>Expected response:</strong></p>
+    <div class="light-code">{
+  "message": "Order placed successfully",
+  "book": "How to get a good grade in DOS in 40 minutes a day"
+}</div>
+    <p><strong>Expected logs:</strong></p>
+    <div class="light-code">[FRONTEND] ROUTE POST /purchase/1 -> http://order:3002
+[ORDER] bought book ...
+[CATALOG] CACHE INVALIDATE sent for id=1
+[CATALOG] UPDATE id=1 field=quantity value=-1
+[CATALOG] SYNC sent to replica for id=1
+[ORDER] SYNC sent to replica - order &lt;orderId&gt;</div>
+    <p><strong>Explain:</strong> Frontend forwards to order. Order checks stock using catalog, asks catalog to decrement quantity, writes the order to CSV, then syncs the order row to the other order replica.</p>
+  </div>
+
+  <div class="card" data-tags="postman invalidation purchase cache consistency">
+    <span class="tag">Postman</span><span class="tag">Consistency</span>
+    <div class="prompt">Test 4: Show purchase invalidates cached book info.</div>
+    <div class="code">DELETE http://localhost:3000/cache/1
+GET    http://localhost:3000/info/1
+GET    http://localhost:3000/info/1
+POST   http://localhost:3000/purchase/1
+GET    http://localhost:3000/info/1</div>
+    <p><strong>Expected key behavior:</strong> the final <code>GET /info/1</code> should be a cache miss because purchase caused a catalog update, and catalog pushed an invalidation to the frontend.</p>
+  </div>
+
+  <div class="card" data-tags="postman load balancing round robin replicas">
+    <span class="tag">Postman</span><span class="tag">Load Balancing</span>
+    <div class="prompt">Test 5: Show round-robin routing.</div>
+    <div class="code">GET  http://localhost:3000/search/distributed%20systems
+GET  http://localhost:3000/search/distributed%20systems
+POST http://localhost:3000/purchase/1
+POST http://localhost:3000/purchase/1</div>
+    <p><strong>Expected logs:</strong></p>
+    <div class="light-code">[FRONTEND] ROUTE GET /search/distributed systems -> http://catalog:3001
+[FRONTEND] ROUTE GET /search/distributed systems -> http://catalog-replica:3003
+[FRONTEND] ROUTE POST /purchase/1 -> http://order:3002
+[FRONTEND] ROUTE POST /purchase/1 -> http://order-replica:3004</div>
+    <p><strong>Important:</strong> <code>GET /info/:id</code> only load-balances on cache miss. Cache hits do not contact catalog.</p>
+  </div>
+
+  <div class="card" data-tags="postman failure out of stock not found">
+    <span class="tag">Postman</span><span class="tag">Failure Cases</span>
+    <div class="prompt">Test 6: Show errors are handled.</div>
+    <div class="code">GET  http://localhost:3000/info/999
+POST http://localhost:3000/purchase/999</div>
+    <p><strong>Expected:</strong> book not found response. Also explain that failed catalog responses are not stored in cache because the frontend only caches when <code>response.ok</code> is true.</p>
+    <p>For out-of-stock, set a book's quantity to 0 using catalog update or repeated purchases, then call purchase again. Expected response is <code>Item out of stock</code>.</p>
+  </div>
+</section>
+
+<section class="section" data-section="phase1">
+  <div class="section-header"><h2>2. Phase 1 Summary</h2></div>
+
+  <div class="card" data-tags="phase1 architecture microservices frontend catalog order">
+    <span class="tag">Phase 1</span><span class="tag">Architecture</span>
+    <div class="prompt">Explain Phase 1 in 30 seconds.</div>
+    <div class="answer">
+      Phase 1 built a simple three-service microservice system. The client only talks to the frontend on port 3000. The frontend forwards lookup requests to the catalog service on port 3001 and purchase requests to the order service on port 3002. The catalog stores book data in a CSV file. The order server checks stock through catalog, decrements stock through catalog, then appends a row to its order CSV.
+    </div>
+  </div>
+
+  <div class="card" data-tags="phase1 endpoints rest api">
+    <span class="tag">Phase 1</span><span class="tag">Endpoints</span>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Service</th><th>Endpoint</th><th>Purpose</th></tr>
+        <tr><td>Frontend</td><td><code>GET /search/:topic</code></td><td>Client-facing search. Calls catalog.</td></tr>
+        <tr><td>Frontend</td><td><code>GET /info/:id</code></td><td>Client-facing info lookup. Calls catalog.</td></tr>
+        <tr><td>Frontend</td><td><code>POST /purchase/:id</code></td><td>Client-facing purchase. Calls order.</td></tr>
+        <tr><td>Catalog</td><td><code>GET /search/:topic</code></td><td>Reads catalog CSV and returns matching books.</td></tr>
+        <tr><td>Catalog</td><td><code>GET /info/:id</code></td><td>Returns book details for one id.</td></tr>
+        <tr><td>Catalog</td><td><code>PUT /update/:id</code></td><td>Updates price or quantity in the CSV.</td></tr>
+        <tr><td>Order</td><td><code>POST /purchase/:id</code></td><td>Checks stock, updates catalog, appends order row.</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card" data-tags="phase1 docker compose ports">
+    <span class="tag">Phase 1</span><span class="tag">Docker</span>
+    <div class="prompt">What did Docker do in Phase 1?</div>
+    <div class="answer">
+      Each service has a Dockerfile. Docker Compose starts the frontend, catalog, and order containers on one internal Docker network. The frontend uses Docker service names like <code>http://catalog:3001</code> instead of localhost because inside a container, localhost means the same container, not the other service. CSV files are mounted as volumes so data changes persist outside the container.
+    </div>
+  </div>
+</section>
+
+<section class="section" data-section="phase2">
+  <div class="section-header purple"><h2>3. Phase 2 Summary</h2></div>
+
+  <div class="card" data-tags="phase2 architecture replication caching consistency">
+    <span class="tag">Phase 2</span><span class="tag">Architecture</span>
+    <div class="prompt">Explain Phase 2 in 45 seconds.</div>
+    <div class="answer">
+      Phase 2 adds replication, caching, and consistency. Catalog has two replicas on ports 3001 and 3003. Order has two replicas on ports 3002 and 3004. The frontend is still single and runs on port 3000. The frontend uses per-request round-robin load balancing to choose a replica. It also has an in-memory cache for <code>GET /info/:id</code>. When catalog data changes, catalog sends <code>DELETE /cache/:id</code> to the frontend before writing, so stale book info is removed. Replicas use <code>POST /sync</code> to mirror writes.
+    </div>
+  </div>
+
+  <div class="card" data-tags="phase2 ports replicas frontend catalog order docker">
+    <span class="tag">Phase 2</span><span class="tag">Ports</span>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Component</th><th>Port</th><th>Docker hostname</th></tr>
+        <tr><td>Frontend</td><td>3000</td><td><code>frontend</code></td></tr>
+        <tr><td>Catalog replica 1</td><td>3001</td><td><code>catalog</code></td></tr>
+        <tr><td>Catalog replica 2</td><td>3003</td><td><code>catalog-replica</code></td></tr>
+        <tr><td>Order replica 1</td><td>3002</td><td><code>order</code></td></tr>
+        <tr><td>Order replica 2</td><td>3004</td><td><code>order-replica</code></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card" data-tags="phase2 performance measurement curl time_total">
+    <span class="tag">Phase 2</span><span class="tag">Performance</span>
+    <div class="prompt">How did we measure performance?</div>
+    <div class="answer">
+      We used <code>curl -w "%{time_total}"</code> to measure total response time through the frontend. We ran 20 requests and averaged them. We measured cached <code>GET /info/1</code>, cache miss after deleting the cached item, and the invalidation request itself with <code>DELETE /cache/1</code>. Results were documented in <code>docs/phase2/performance-results.md</code>.
+    </div>
+    <div class="code">for i in {1..20}; do
+  curl -s -o /dev/null -w "%{time_total}\n" http://localhost:3000/info/1
+done</div>
+  </div>
+</section>
+
+<section class="section" data-section="code">
+  <div class="section-header yellow"><h2>4. Show-Me Code Locations</h2></div>
+
+  <div class="grid">
+    <div class="mini" data-tags="code cache frontend invalidation">
+      <strong>Frontend cache object</strong>
+      <code>frontend/index.js</code><br />
+      Near top: <code>const cache = {};</code>
+    </div>
+    <div class="mini" data-tags="code round robin algorithm load balancing frontend">
+      <strong>Round-robin helpers</strong>
+      <code>frontend/index.js</code><br />
+      <code>getNextCatalog()</code> and <code>getNextOrder()</code>
+    </div>
+    <div class="mini" data-tags="code cache hit miss frontend info">
+      <strong>Cache hit and miss</strong>
+      <code>frontend/index.js</code><br />
+      <code>GET /info/:id</code>
+    </div>
+    <div class="mini" data-tags="code invalidation frontend delete cache">
+      <strong>Cache invalidation endpoint</strong>
+      <code>frontend/index.js</code><br />
+      <code>DELETE /cache/:id</code>
+    </div>
+    <div class="mini" data-tags="code catalog invalidation consistency">
+      <strong>Catalog sends invalidation</strong>
+      <code>catalog/index.js</code><br />
+      In <code>PUT /update/:id</code>, before writing CSV.
+    </div>
+    <div class="mini" data-tags="code catalog sync replica">
+      <strong>Catalog replica sync</strong>
+      <code>catalog/index.js</code><br />
+      Sends <code>POST /sync</code> after write. Receives <code>POST /sync</code> without syncing back.
+    </div>
+    <div class="mini" data-tags="code order purchase flow sync csv">
+      <strong>Order purchase flow</strong>
+      <code>order/index.js</code><br />
+      Info check, stock check, catalog update, append order row, sync order replica.
+    </div>
+    <div class="mini" data-tags="code docker compose ports hostnames">
+      <strong>Docker services and ports</strong>
+      <code>docker-compose.yml</code><br />
+      Frontend, catalog, catalog-replica, order, order-replica.
+    </div>
+  </div>
+
+  <div class="card" data-tags="code exact invalidation answer">
+    <span class="tag">Very Likely Question</span>
+    <div class="prompt">"Show me exactly where you invalidate the cache."</div>
+    <div class="answer">
+      There are two places to show:
+      <ol>
+        <li>Frontend receives invalidation at <code>DELETE /cache/:id</code> in <code>frontend/index.js</code>. It executes <code>delete cache[id]</code>.</li>
+        <li>Catalog sends invalidation before writing in <code>PUT /update/:id</code> in <code>catalog/index.js</code> using <code>fetch(`${FRONTEND_URL}/cache/${id}`, { method: 'DELETE' })</code>.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class="section" data-section="questions">
+  <div class="section-header green"><h2>5. Likely Discussion Questions</h2></div>
+
+  <div class="card qa" data-tags="questions explain project overview">
+    <span class="qid">Q1</span><span class="tag">Overview</span>
+    <div class="prompt">Explain the project generally.</div>
+    <button class="btn" onclick="toggleAnswer(this)">Reveal Answer</button>
+    <div class="answer hidden">
+      We implemented Bazar.com as a microservice system. Phase 1 had frontend, catalog, and order services. The frontend is the only service clients call. Catalog stores book data in CSV and supports search, info, and update. Order handles purchases by checking catalog stock, updating quantity, and writing orders to CSV. Phase 2 added replicas, round-robin load balancing in the frontend, an in-memory cache for book info, cache invalidation for consistency, and sync endpoints to keep replicas consistent.
+    </div>
+  </div>
+
+  <div class="card qa" data-tags="questions algorithm round robin load balancing per request">
+    <span class="qid">Q2</span><span class="tag">Load Balancing</span>
+    <div class="prompt">What algorithm did you use for load balancing?</div>
+    <button class="btn" onclick="toggleAnswer(this)">Reveal Answer</button>
+    <div class="answer hidden">
+      We used per-request round-robin. The frontend keeps an array of replicas and an index. For each request, it picks the current URL, increments the index modulo the number of replicas, and forwards the request. Catalog requests rotate between catalog and catalog-replica. Order requests rotate between order and order-replica.
+    </div>
+  </div>
+
+  <div class="card qa" data-tags="questions caching what cached why info search purchase">
+    <span class="qid">Q3</span><span class="tag">Caching</span>
+    <div class="prompt">What exactly did you cache and why?</div>
+    <button class="btn" onclick="toggleAnswer(this)">Reveal Answer</button>
+    <div class="answer hidden">
+      We cache only successful <code>GET /info/:id</code> responses. This endpoint returns lookup data for a single book, so it is useful to reuse. We do not cache <code>POST /purchase/:id</code> because purchases are writes. We also do not cache failed catalog responses because the frontend only stores data if <code>response.ok</code> is true.
+    </div>
+  </div>
+
+  <div class="card qa" data-tags="questions consistency invalidation server push">
+    <span class="qid">Q4</span><span class="tag">Consistency</span>
+    <div class="prompt">How do you keep the cache consistent?</div>
+    <button class="btn" onclick="toggleAnswer(this)">Reveal Answer</button>
+    <div class="answer hidden">
+      We use server-push invalidation. Before catalog writes a changed book to its CSV, it calls the frontend endpoint <code>DELETE /cache/:id</code>. The frontend deletes that one cached item. After the write, catalog syncs the update to the other catalog replica. This prevents the frontend from serving stale book info after a purchase or catalog update.
+    </div>
+  </div>
+
+  <div class="card qa" data-tags="questions data consistency replica sync">
+    <span class="qid">Q5</span><span class="tag">Replica Sync</span>
+    <div class="prompt">How do replicas stay consistent?</div>
+    <button class="btn" onclick="toggleAnswer(this)">Reveal Answer</button>
+    <div class="answer hidden">
+      Each replica has a <code>POST /sync</code> endpoint. When one catalog replica updates price or quantity, it writes locally and calls <code>POST /sync</code> on the other catalog replica. The sync endpoint applies the same update but does not sync back, which avoids an infinite loop. Order replicas do the same for new order rows.
+    </div>
+  </div>
+
+  <div class="card qa" data-tags="questions docker ports compose hostnames">
+    <span class="qid">Q6</span><span class="tag">Docker</span>
+    <div class="prompt">What did you write in Docker Compose and what are the ports?</div>
+    <button class="btn" onclick="toggleAnswer(this)">Reveal Answer</button>
+    <div class="answer hidden">
+      Docker Compose defines five services: frontend on 3000, catalog on 3001, catalog-replica on 3003, order on 3002, and order-replica on 3004. All are on the same Docker network. Inside Docker, services use hostnames like <code>catalog</code>, <code>catalog-replica</code>, <code>order</code>, and <code>order-replica</code>. CSV files are mounted as volumes so data persists.
+    </div>
+  </div>
+
+  <div class="card qa" data-tags="questions performance measurement">
+    <span class="qid">Q7</span><span class="tag">Performance</span>
+    <div class="prompt">How did you measure performance?</div>
+    <button class="btn" onclick="toggleAnswer(this)">Reveal Answer</button>
+    <div class="answer hidden">
+      We used curl's <code>time_total</code> output and ran 20 requests for each experiment. We measured cached info lookup, cache miss after invalidation, and invalidation request overhead. The results are in <code>docs/phase2/performance-results.md</code>. Because everything ran locally in Docker, all times were very small.
+    </div>
+  </div>
+
+  <div class="card qa" data-tags="questions tradeoffs limitations improvements">
+    <span class="qid">Q8</span><span class="tag">Tradeoffs</span>
+    <div class="prompt">What are the main tradeoffs or limitations?</div>
+    <button class="btn" onclick="toggleAnswer(this)">Reveal Answer</button>
+    <div class="answer hidden">
+      Round-robin is simple but does not know which replica is healthier or less busy. The in-memory cache is fast but disappears if the frontend restarts. CSV files are easy for the lab, but they are not ideal for concurrent writes or transactions. Improvements would include health checks, retries, a real database, locks or transactions, cache size limits, and an LRU cache policy.
+    </div>
+  </div>
+</section>
+
+<section class="section" data-section="docker">
+  <div class="section-header"><h2>6. Pre-Discussion Checklist</h2></div>
+
+  <div class="card" data-tags="docker checklist before discussion">
+    <span class="tag">Checklist</span>
+    <ul class="checklist">
+      <li>Run <code>docker compose up --build</code> before opening Postman.</li>
+      <li>Keep the Docker logs visible.</li>
+      <li>Use <code>distributed%20systems</code>, not just <code>distributed</code>, because the topic in CSV is "distributed systems".</li>
+      <li>Clear cache with <code>DELETE /cache/1</code> before demonstrating a cache miss.</li>
+      <li>Call <code>GET /info/1</code> twice to show miss then hit.</li>
+      <li>Call <code>POST /purchase/1</code> to show order flow, cache invalidation, quantity update, and replica sync.</li>
+      <li>Show <code>docs/phase2/output-logs.md</code> for saved logs.</li>
+      <li>Show <code>docs/phase2/performance-results.md</code> for measurements.</li>
+      <li>Show <code>docs/phase2/design.md</code> for design and tradeoffs.</li>
+    </ul>
+  </div>
+
+  <div class="card" data-tags="docker environment quick fix catalog replica">
+    <span class="tag">Pre-Demo Sanity Check</span>
+    <div class="prompt">Make sure catalog-replica has Docker service URLs too.</div>
+    <p>If the instructor directly tests writes against <code>catalog-replica:3003</code>, it should use Docker service names, not localhost. In <code>docker-compose.yml</code>, the catalog-replica service should include:</p>
+    <div class="code">catalog-replica:
+  environment:
+    PORT: 3003
+    REPLICA_URL: http://catalog:3001
+    FRONTEND_URL: http://frontend:3000</div>
+  </div>
+</section>
+
+<footer>Generated in the same card-based study style as template.html.</footer>
+</div>
+
+<script>
+function toggleAnswer(btn){
+  const box = btn.nextElementSibling;
+  box.classList.toggle('hidden');
+  btn.textContent = box.classList.contains('hidden') ? 'Reveal Answer' : 'Hide Answer';
+}
+
+function filterCards(){
+  const q = document.getElementById('search').value.toLowerCase();
+  const section = document.getElementById('sectionFilter').value;
+  let count = 0;
+
+  document.querySelectorAll('.section').forEach(sec => {
+    const sectionMatch = section === 'all' || sec.dataset.section === section;
+    let visibleInSection = false;
+    sec.querySelectorAll('.card,.mini').forEach(card => {
+      const text = card.textContent.toLowerCase();
+      const tags = (card.dataset.tags || '').toLowerCase();
+      const match = sectionMatch && (!q || text.includes(q) || tags.includes(q));
+      card.style.display = match ? '' : 'none';
+      if (match) {
+        count++;
+        visibleInSection = true;
+      }
+    });
+    sec.style.display = visibleInSection ? '' : 'none';
+  });
+
+  document.getElementById('count').textContent = count + ' card(s)';
+}
+
+filterCards();
+</script>
+</body>
+</html>
