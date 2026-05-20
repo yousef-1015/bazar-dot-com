@@ -23,6 +23,8 @@ services:
       - "3001:3001"
     environment:
       PORT: 3001
+      REPLICA_URL: http://catalog-replica:3003
+      FRONTEND_URL: http://frontend:3000
     volumes:
       - ./catalog/catalog-data.csv:/app/catalog-data.csv
     networks:
@@ -48,6 +50,7 @@ services:
     environment:
       PORT: 3002
       CATALOG_URL: http://catalog:3001
+      REPLICA_URL: http://order-replica:3004
     volumes:
       - ./order/orders-data.csv:/app/orders-data.csv
     depends_on:
@@ -63,6 +66,7 @@ services:
     environment:
       PORT: 3004
       CATALOG_URL: http://catalog:3001
+      REPLICA_URL: http://order:3002
     volumes:
       - ./order-replica/order-data.csv:/app/orders-data.csv
     depends_on:

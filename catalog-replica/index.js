@@ -7,8 +7,8 @@ import fetch from 'node-fetch'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-const REPLICA_URL  = 'http://localhost:3001'   // points back to catalog replica 1
-const FRONTEND_URL = 'http://localhost:3000'
+const REPLICA_URL = process.env.REPLICA_URL || 'http://localhost:3001'
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000'
 
 
 const app = express()
@@ -143,6 +143,13 @@ app.post('/sync', (req, res) => {
 
 
 const PORT = 3003
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`[CATALOG] Server running on port ${PORT}`)
+})
+
+process.on('SIGTERM', () => {
+  console.log('[CATALOG] Shutting down')
+  server.close(() => {
+    process.exit(0)
+  })
 })
