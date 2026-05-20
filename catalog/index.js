@@ -11,8 +11,8 @@ app.use(express.json())
 
 const CSV_PATH = path.join(__dirname, 'catalog-data.csv')
 
-const REPLICA_URL  = 'http://localhost:3003'   // the other catalog replica
-const FRONTEND_URL = 'http://localhost:3000'   // frontend cache lives here
+const REPLICA_URL = process.env.REPLICA_URL || 'http://localhost:3003'
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000'
 
 //*********** */
 
