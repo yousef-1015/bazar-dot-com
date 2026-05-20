@@ -2,9 +2,14 @@ import express from 'express'
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import fetch from 'node-fetch'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
+
+const REPLICA_URL  = 'http://localhost:3001'   // points back to catalog replica 1
+const FRONTEND_URL = 'http://localhost:3000'
+
 
 const app = express()
 app.use(express.json())
@@ -47,8 +52,6 @@ app.get('/search/:topic', (req, res) => {
 })
 
 //*Block 4 — GET /info/:id:
-
-
 app.get('/info/:id', (req, res) => {
   const id = parseInt(req.params.id)
   const books = readCatalog()
@@ -64,8 +67,9 @@ app.get('/info/:id', (req, res) => {
 })
 
 
-//* Block 5 — PUT /update/:id
-app.put('/update/:id', (req, res) => {
+//* PUT /update/:id
+// PUT /update/:id  — invalidates cache, writes CSV, syncs to replica 1
+app.put('/update/:id', async (req, res) => {
   const id = parseInt(req.params.id)
   const { field, value } = req.body
 
@@ -84,11 +88,54 @@ app.put('/update/:id', (req, res) => {
     return res.status(400).json({ error: 'Invalid field' })
   }
 
+  // Step 1: Invalidate cache BEFORE writing
+  try {
+    await fetch(`${FRONTEND_URL}/cache/${id}`, { method: 'DELETE' })
+    console.log(`[CATALOG-R2] CACHE INVALIDATE sent for id=${id}`)
+  } catch (err) {
+    console.log(`[CATALOG-R2] WARNING — could not reach frontend cache`)
+  }
+
+  // Step 2: Write to own CSV
   writeCatalog(books)
-  console.log(`[CATALOG] UPDATE id=${id} field=${field} value=${value}`)
+  console.log(`[CATALOG-R2] UPDATE id=${id} field=${field} value=${value}`)
+
+  // Step 3: Sync to replica 1
+  try {
+    await fetch(`${REPLICA_URL}/sync`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, field, value })
+    })
+    console.log(`[CATALOG-R2] SYNC sent to replica 1 for id=${id}`)
+  } catch (err) {
+    console.log(`[CATALOG-R2] WARNING — could not reach catalog replica 1`)
+  }
+
   res.json({ message: 'Updated successfully' })
 })
 
+
+app.post('/sync', (req, res) => {
+  const { id, field, value } = req.body
+
+  const books = readCatalog()
+  const book = books.find(b => b.id === parseInt(id))
+
+  if (!book) {
+    return res.status(404).json({ error: 'Book not found' })
+  }
+
+  if (field === 'quantity') {
+    book.quantity += value
+  } else if (field === 'price') {
+    book.price = value
+  }
+
+  writeCatalog(books)
+  console.log(`[CATALOG-R2] SYNC received — id=${id} field=${field} value=${value}`)
+  res.json({ message: 'Sync applied' })
+})
 
 
 //* app.listen

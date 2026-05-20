@@ -2,7 +2,7 @@ import express from 'express'
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
-
+import fetch from 'node-fetch' 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
@@ -10,6 +10,9 @@ const app = express()
 app.use(express.json())
 
 const CSV_PATH = path.join(__dirname, 'catalog-data.csv')
+
+const REPLICA_URL  = 'http://localhost:3003'   // the other catalog replica
+const FRONTEND_URL = 'http://localhost:3000'   // frontend cache lives here
 
 //*********** */
 
@@ -64,8 +67,8 @@ app.get('/info/:id', (req, res) => {
 })
 
 
-//* Block 5 — PUT /update/:id
-app.put('/update/:id', (req, res) => {
+//*  PUT /update/:id
+app.put('/update/:id', async (req, res) => {
   const id = parseInt(req.params.id)
   const { field, value } = req.body
 
@@ -84,16 +87,61 @@ app.put('/update/:id', (req, res) => {
     return res.status(400).json({ error: 'Invalid field' })
   }
 
+  // Step 1: Invalidate cache BEFORE writing 
+  //* Tells the frontend to delete its cached copy of this book
+  try {
+    await fetch(`${FRONTEND_URL}/cache/${id}`, { method: 'DELETE' })
+    console.log(`[CATALOG] CACHE INVALIDATE sent for id=${id}`)
+  } catch (err) {
+    console.log(`[CATALOG] WARNING — could not reach frontend cache`)
+  }
+
+  // Step 2: Write to own CSV
   writeCatalog(books)
   console.log(`[CATALOG] UPDATE id=${id} field=${field} value=${value}`)
+
+  // Step 3: Sync to other replica
+  try {
+    await fetch(`${REPLICA_URL}/sync`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, field, value }) //This converts a JavaScript object into a JSON string so it can be sent over the network:
+
+    })
+    console.log(`[CATALOG] SYNC sent to replica for id=${id}`)
+  } catch (err) {
+    console.log(`[CATALOG] WARNING — could not reach catalog replica`)
+  }
+
   res.json({ message: 'Updated successfully' })
+})
+
+
+// Called by the other replica to mirror a write — does NOT sync back (no loop)
+app.post('/sync', (req, res) => {
+  const { id, field, value } = req.body
+
+  const books = readCatalog()
+  const book = books.find(b => b.id === parseInt(id))
+
+  if (!book) {
+    return res.status(404).json({ error: 'Book not found' })
+  }
+
+  if (field === 'quantity') {
+    book.quantity += value
+  } else if (field === 'price') {
+    book.price = value
+  }
+
+  writeCatalog(books)
+  console.log(`[CATALOG] SYNC received — id=${id} field=${field} value=${value}`)
+  res.json({ message: 'Sync applied' })
 })
 
 
 
 //* app.listen
-
-
 
 const PORT = 3001
 app.listen(PORT, () => {
