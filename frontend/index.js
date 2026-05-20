@@ -2,8 +2,13 @@ import express from "express";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const catalogReplicas = ["http://localhost:3001", "http://localhost:3003"];
-const orderReplicas = ["http://localhost:3002", "http://localhost:3004"];
+const catalogReplicas = (
+  process.env.CATALOG_REPLICAS || "http://localhost:3001,http://localhost:3003"
+).split(",");
+
+const orderReplicas = (
+  process.env.ORDER_REPLICAS || "http://localhost:3002,http://localhost:3004"
+).split(",");
 const cache = {};
 
 let catalogIndex = 0;
