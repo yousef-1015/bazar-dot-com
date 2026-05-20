@@ -68,7 +68,7 @@ services:
       CATALOG_URL: http://catalog:3001
       REPLICA_URL: http://order:3002
     volumes:
-      - ./order-replica/order-data.csv:/app/orders-data.csv
+      - ./order-replica/orders-data.csv:/app/orders-data.csv
     depends_on:
       - catalog
     networks:
