@@ -77,6 +77,18 @@ app.get("/info/:id", async (req, res) => {
 });
 
 
+app.delete("/cache/:id", (req, res) => {
+  const id = req.params.id;
+
+  delete cache[id];
+
+  console.log(`[FRONTEND] CACHE INVALIDATED id=${id}`);
+
+  res.json({
+    message: "Cache invalidated"
+  });
+});
+
 app.post("/purchase/:id", async (req, res) => {
   try {
   const orderUrl = getNextOrder();
