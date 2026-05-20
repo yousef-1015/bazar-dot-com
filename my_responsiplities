@@ -101,13 +101,13 @@ Assumptions To Confirm With Person A
 - [✅] Add a short explanation of how much caching helped.
 
 8. Person B Design Notes - docs/phase2/design.md
-- [ ] Document frontend round-robin load balancing.
-- [ ] Document what is cached and why only GET /info/:id is cached.
-- [ ] Document cache hit and miss behavior.
-- [ ] Document server-push cache invalidation flow.
-- [ ] Document Docker service hostname setup.
-- [ ] Document tradeoffs and possible improvements.
-- [ ] Document how to run the Person B/frontend tests.
+- [✅] Document frontend round-robin load balancing.
+- [✅] Document what is cached and why only GET /info/:id is cached.
+- [✅] Document cache hit and miss behavior.
+- [✅] Document server-push cache invalidation flow.
+- [✅] Document Docker service hostname setup.
+- [✅] Document tradeoffs and possible improvements.
+- [✅] Document how to run the Person B/frontend tests.
 
 Current First Task
 - [✅] Implement frontend load balancing replica configuration in frontend/index.js:
