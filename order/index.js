@@ -12,8 +12,9 @@ app.use(express.json())
 
 const ORDERS_PATH = path.join(__dirname, 'orders-data.csv')
 const CATALOG_URL = process.env.CATALOG_URL || 'http://localhost:3001'
+const REPLICA_URL = 'http://localhost:3004'   // the other order replica
 
-//* POST /purchase/:id 
+//* POST /purchase/:id
 app.post('/purchase/:id', async (req, res) => {
   const id = req.params.id
 
@@ -49,16 +50,44 @@ app.post('/purchase/:id', async (req, res) => {
     console.log(`[ORDER] ERROR — could not update catalog`)
     return res.status(500).json({ error: 'Could not update catalog' })
   }
-  // Step 4: Append to orders.csv
+
+  // Step 4: Append to own orders-data.csv
   const orderId = Date.now()
   const timestamp = new Date().toISOString()
   const newRow = `\n${orderId},${book.id},${book.title},${timestamp}`
   fs.appendFileSync(ORDERS_PATH, newRow, 'utf8')
 
-  // Step 5: Log and respond
+  // Step 5: Sync new order to other replica
+  try {
+    await fetch(`${REPLICA_URL}/sync`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        orderId,
+        bookId:    book.id,
+        bookTitle: book.title,
+        timestamp
+      })
+    })
+    console.log(`[ORDER] SYNC sent to replica — order ${orderId}`)
+  } catch (err) {
+    console.log(`[ORDER] WARNING — could not reach order replica`)
+  }
+
+  // Step 6: Log and respond
   console.log(`[ORDER] bought book ${book.title}`)
   res.json({ message: 'Order placed successfully', book: book.title })
 })
+
+// POST /sync  — receives a new order row from replica, appends locally only (no loop)
+app.post('/sync', (req, res) => {
+  const { orderId, bookId, bookTitle, timestamp } = req.body
+  const newRow = `\n${orderId},${bookId},${bookTitle},${timestamp}`
+  fs.appendFileSync(ORDERS_PATH, newRow, 'utf8')
+  console.log(`[ORDER] SYNC received — order ${orderId} "${bookTitle}"`)
+  res.json({ message: 'Sync applied' })
+})
+
 
 //* listen 
 const PORT = process.env.PORT || 3002
