@@ -1,0 +1,115 @@
+Bazar.com Lab 2 - Person B Checklist
+Source: Phase 2.pdf + current project structure
+
+How we will use this file
+- Keep this file as the live checklist for Person B.
+- When a task is finished, update only that exact checklist item from [ ] to [✅].
+- Code and step-by-step guidance will be provided in chat before editing project files.
+- Do not edit project files directly unless we explicitly choose the next checklist task.
+
+Person B Scope
+- Frontend load balancing across catalog/order replicas.
+- Frontend in-memory cache for book info lookups.
+- Frontend cache invalidation endpoint for backend server-push invalidation.
+- Docker Compose updates for replica services and Docker hostnames.
+- Integration testing evidence and docs for the Person B pieces.
+
+Assumptions To Confirm With Person A
+- Catalog replica will run on port 3003.
+- Order replica will run on port 3004.
+- Catalog replicas will call DELETE /cache/:id on the frontend before catalog writes.
+- Catalog and order replicas will keep their own CSV files synchronized using POST /sync.
+- Frontend remains a single service on port 3000.
+
+1. Frontend Load Balancing - frontend/index.js
+- [✅] Replace the single CATALOG_URL value with a catalog replica list.
+      Suggested local values:
+      const catalogReplicas = ["http://localhost:3001", "http://localhost:3003"];
+- [✅] Replace the single ORDER_URL value with an order replica list.
+      Suggested local values:
+      const orderReplicas = ["http://localhost:3002", "http://localhost:3004"];
+- [✅] Add catalogIndex and orderIndex counters near the replica lists.
+- [✅] Add getNextCatalog() round-robin helper.
+- [✅] Add getNextOrder() round-robin helper.
+- [✅] Update GET /search/:topic to forward through getNextCatalog().
+- [✅] Update GET /info/:id cache misses to forward through getNextCatalog().
+- [✅] Update POST /purchase/:id to forward through getNextOrder().
+- [✅] Add logs showing which replica each forwarded request used.
+      Example: [FRONTEND] ROUTE GET /info/1 -> http://localhost:3001
+
+2. Frontend In-Memory Cache - frontend/index.js
+- [✅] Add a cache object near the top of the file.
+      Suggested code:
+      const cache = {};
+- [✅] In GET /info/:id, check cache[id] before calling a catalog replica.
+- [✅] On cache hit, return cached data and log:
+      [FRONTEND] CACHE HIT id=<id>
+- [✅] On cache miss, call a catalog replica, store successful response data in cache[id], and log:
+      [FRONTEND] CACHE MISS id=<id>
+- [✅] Keep GET /search/:topic uncached.
+- [✅] Keep POST /purchase/:id uncached because it is a write/order request.
+- [✅] Do not cache error responses from catalog replicas.
+
+3. Frontend Cache Invalidation Endpoint - frontend/index.js
+- [✅] Add DELETE /cache/:id.
+- [✅] In DELETE /cache/:id, delete only cache[id].
+- [✅] Return JSON confirming the invalidation.
+      Suggested response:
+      { "message": "Cache invalidated" }
+- [✅] Log each invalidation.
+      Example: [FRONTEND] CACHE INVALIDATED id=1
+- [✅] Confirm this endpoint works with curl before relying on catalog replica calls.
+
+4. Docker Compose - docker-compose.yml
+- [✅] Add catalog-replica service on port 3003.
+- [✅] Add order-replica service on port 3004.
+- [✅] Update frontend environment to use Docker service hostnames instead of localhost.
+      Suggested values:
+      CATALOG_REPLICAS=http://catalog:3001,http://catalog-replica:3003
+      ORDER_REPLICAS=http://order:3002,http://order-replica:3004
+- [✅] Update frontend/index.js to read CATALOG_REPLICAS and ORDER_REPLICAS from environment variables, with localhost fallbacks.
+- [✅] Add depends_on entries so frontend waits for catalog, catalog-replica, order, and order-replica.
+- [✅] Keep CSV files mounted as volumes for catalog/order services.
+- [✅] Check the order CSV volume path matches the real file name in this repo.
+      Current repo file appears to be order/orders-data.csv.
+
+5. Person B Integration Tests
+- [✅] Start all services locally or through Docker.
+- [✅] Test GET /search/:topic several times and confirm catalog replicas alternate in logs.
+- [✅] Test GET /info/:id once and confirm CACHE MISS.
+- [✅] Test GET /info/:id again and confirm CACHE HIT.
+- [✅] Test POST /purchase/:id several times and confirm order replicas alternate in logs.
+- [✅] Test DELETE /cache/:id directly and confirm the next GET /info/:id is a CACHE MISS.
+- [✅] Test backend-driven invalidation after Person A wires catalog writes to DELETE /cache/:id.
+- [✅] Confirm failed catalog responses are not stored in cache.
+
+6. Person B Output Evidence - docs/phase2/output-logs.md
+- [✅] Add log sample showing load balancer routing to catalog replica 1.
+- [✅] Add log sample showing load balancer routing to catalog replica 2.
+- [✅] Add log sample showing load balancer routing to order replica 1.
+- [✅] Add log sample showing load balancer routing to order replica 2.
+- [✅] Add log sample showing CACHE MISS.
+- [✅] Add log sample showing CACHE HIT.
+- [✅] Add log sample showing CACHE INVALIDATED.
+
+7. Person B Performance Results - docs/phase2/performance-results.md
+- [✅] Measure repeated GET /info/:id response time with cache enabled.
+- [✅] Temporarily bypass/disable cache and measure repeated GET /info/:id response time without cache.
+- [✅] Measure first request latency after DELETE /cache/:id causes a cache miss.
+- [✅] Measure cache invalidation overhead from invalidation request to next cache miss.
+- [✅] Put results in a table.
+- [✅] Add a short explanation of how much caching helped.
+
+8. Person B Design Notes - docs/phase2/design.md
+- [ ] Document frontend round-robin load balancing.
+- [ ] Document what is cached and why only GET /info/:id is cached.
+- [ ] Document cache hit and miss behavior.
+- [ ] Document server-push cache invalidation flow.
+- [ ] Document Docker service hostname setup.
+- [ ] Document tradeoffs and possible improvements.
+- [ ] Document how to run the Person B/frontend tests.
+
+Current First Task
+- [✅] Implement frontend load balancing replica configuration in frontend/index.js:
+      add catalogReplicas, orderReplicas, catalogIndex, orderIndex,
+      getNextCatalog(), and getNextOrder().
