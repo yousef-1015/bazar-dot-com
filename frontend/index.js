@@ -4,6 +4,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const catalogReplicas = ["http://localhost:3001", "http://localhost:3003"];
 const orderReplicas = ["http://localhost:3002", "http://localhost:3004"];
+const cache = {};
 
 let catalogIndex = 0;
 let orderIndex = 0;
@@ -47,12 +48,26 @@ app.get("/search/:topic", async (req, res) => {
 
 
 app.get("/info/:id", async (req, res) => {
-  try {
-    const catalogUrl = getNextCatalog();
-    console.log(`[FRONTEND] ROUTE GET /info/${req.params.id} -> ${catalogUrl}`);
+  const id = req.params.id;
 
-    const response = await fetch(`${catalogUrl}/info/${req.params.id}`);
+  if (cache[id]) {
+    console.log(`[FRONTEND] CACHE HIT id=${id}`);
+    return res.json(cache[id]);
+  }
+
+  try {
+    console.log(`[FRONTEND] CACHE MISS id=${id}`);
+
+    const catalogUrl = getNextCatalog();
+    console.log(`[FRONTEND] ROUTE GET /info/${id} -> ${catalogUrl}`);
+
+    const response = await fetch(`${catalogUrl}/info/${id}`);
     const data = await response.json();
+
+    if (response.ok) {
+      cache[id] = data;
+    }
+
     res.status(response.status).json(data);
   } catch (error) {
     res.status(500).json({
@@ -60,6 +75,7 @@ app.get("/info/:id", async (req, res) => {
     });
   }
 });
+
 
 app.post("/purchase/:id", async (req, res) => {
   try {
