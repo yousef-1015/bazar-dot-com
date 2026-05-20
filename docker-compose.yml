@@ -6,11 +6,13 @@ services:
       - "3000:3000"
     environment:
       PORT: 3000
-      CATALOG_URL: http://catalog:3001
-      ORDER_URL: http://order:3002
+      CATALOG_REPLICAS: http://catalog:3001,http://catalog-replica:3003
+      ORDER_REPLICAS: http://order:3002,http://order-replica:3004
     depends_on:
       - catalog
+      - catalog-replica
       - order
+      - order-replica
     networks:
       - bazar-network
 
@@ -26,6 +28,18 @@ services:
     networks:
       - bazar-network
 
+  catalog-replica:
+    build: ./catalog-replica
+    container_name: bazar-catalog-replica
+    ports:
+      - "3003:3003"
+    environment:
+      PORT: 3003
+    volumes:
+      - ./catalog-replica/catalog-data.csv:/app/catalog-data.csv
+    networks:
+      - bazar-network
+
   order:
     build: ./order
     container_name: bazar-order
@@ -35,7 +49,22 @@ services:
       PORT: 3002
       CATALOG_URL: http://catalog:3001
     volumes:
-      - ./order/orders.csv:/app/orders.csv
+      - ./order/orders-data.csv:/app/orders-data.csv
+    depends_on:
+      - catalog
+    networks:
+      - bazar-network
+
+  order-replica:
+    build: ./order-replica
+    container_name: bazar-order-replica
+    ports:
+      - "3004:3004"
+    environment:
+      PORT: 3004
+      CATALOG_URL: http://catalog:3001
+    volumes:
+      - ./order-replica/order-data.csv:/app/orders-data.csv
     depends_on:
       - catalog
     networks:
